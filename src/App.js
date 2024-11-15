@@ -35,6 +35,7 @@ import PurchaseHistory from "./Components/core/Dashboard/PurchaseHistory";
 import InstructorDashboard from "./Components/core/Dashboard/InstructorDashboard/InstructorDashboard";
 import { RiWifiOffLine } from "react-icons/ri";
 import AdminPannel from "./Components/core/Dashboard/AdminPannel";
+import { ScrollBottomToTop,ScrollTopToBottom } from "./Components/common/Scrollers";
 
 function App() {
   console.log = function () {};
@@ -162,6 +163,8 @@ function App() {
 
         <Route path="*" element={<Home />} />
       </Routes>
+      <ScrollTopToBottom/>
+      <ScrollBottomToTop/>
       <Footer />
     </div>
   );
