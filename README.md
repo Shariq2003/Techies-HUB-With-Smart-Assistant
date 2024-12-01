@@ -1,5 +1,5 @@
 # Techies HUB With Smart Assistance
-:rocket: [Link to website](https://github.com/Shariq2003)
+:rocket: [Link to website](https://techies-hub.vercel.app/)
 
 Techies HUB is a fully functional EdTech platform that enables users to create, consume, and rate educational content. The platform is built using the MERN stack, which includes ReactJS, NodeJS, MongoDB, and ExpressJS.
 
