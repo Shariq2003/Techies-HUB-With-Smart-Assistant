@@ -14,6 +14,7 @@ import LoadingBar from "react-top-loading-bar";
 import { setProgress } from "./slices/loadingBarSlice";
 import { useSelector } from "react-redux";
 import { useDispatch } from "react-redux";
+import GeminiAI from "./pages/GeminiAI";
 import Dashboard from "./pages/Dashboard";
 import OpenRoute from "./Components/core/Auth/OpenRoute";
 import PrivateRoute from "./Components/core/Auth/PrivateRoute";
@@ -160,7 +161,8 @@ function App() {
             </>
           )}
         </Route>
-
+        
+        <Route path="/gemini-ai" element={<GeminiAI />} />
         <Route path="*" element={<Home />} />
       </Routes>
       <ScrollTopToBottom/>
