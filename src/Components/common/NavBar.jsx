@@ -1,5 +1,4 @@
 import React, { useState } from 'react'
-import logo from "../../assets/Logo/Logo-Full-Light.png"
 import { Link, matchPath } from 'react-router-dom'
 import { NavbarLinks } from '../../data/navbar-links'
 import { useLocation } from 'react-router-dom'
@@ -95,7 +94,6 @@ const NavBar = ({ setProgress }) => {
         <div className={`fixed top-0 flex bg-richblack-900 w-screen z-50 h-14 items-center justify-center border-b-[1px] border-b-richblack-700 transition-all duration-500`}>
             <div className='flex w-11/12 max-w-maxContent items-center justify-between'>
                 <Link to='/' onClick={() => { dispatch(setProgress(100)) }}>
-                    {/* <img src={logo} width={160} alt="Techies HUB" height={42}></img> */}
                     <h2 className='text-white text-2xl font-bold'>
                         Techies HUB
                     </h2>
