@@ -13,6 +13,7 @@ const cookieParser = require("cookie-parser");
 const cors = require("cors");
 const fileUpload = require("express-fileupload");
 const { cloudnairyconnect } = require("./config/cloudinary");
+const GeminitRoute = require("./routes/Gemini-ai");
 
 const dotenv = require("dotenv");
 dotenv.config();
@@ -53,6 +54,8 @@ app.use("/api/v1/profile", profileRoutes);
 app.use("/api/v1/course", CourseRoutes);
 
 app.use("/api/v1/contact", require("./routes/ContactUs"));
+
+app.use("/api/v1/gemini-ai", GeminitRoute);
 
 app.get("/", (req, res) => {
   res.status(200).json({

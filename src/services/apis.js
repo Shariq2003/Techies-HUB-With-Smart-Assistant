@@ -67,6 +67,11 @@ export const contactusEndpoint = {
   CONTACT_US_API: BASE_URL + "/contact/contactUs",
 };
 
+// GEMINI AI
+export const geminiai = {
+  GEMINI_AI_API: BASE_URL + "/gemini-ai",
+};
+
 // SETTINGS PAGE API
 export const settingsEndpoints = {
   UPDATE_DISPLAY_PICTURE_API: BASE_URL + "/profile/updateDisplayPicture",
