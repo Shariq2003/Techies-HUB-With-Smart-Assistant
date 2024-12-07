@@ -1,6 +1,9 @@
 import { useEffect, useRef, useState } from 'react';
 import { toast } from 'react-hot-toast';
-import { FaRegPaperPlane, FaRegCopy } from 'react-icons/fa';
+import { FaRegPaperPlane } from 'react-icons/fa';
+import ReactMarkdown from 'react-markdown';
+import { apiConnector } from '../services/apiConnector';
+import { geminiai } from '../services/apis';
 
 export default function GeminiAI() {
     const [userInput, setUserInput] = useState('');
@@ -25,38 +28,12 @@ export default function GeminiAI() {
         }
     }, [chatHistory]);
 
-    const formatMessage = (text) => {
-        const messageText = typeof text === 'string' ? text : '';
-        const regex = /```(.*?)```/gs;
-
-        return messageText.split(regex).map((part, index) =>
-            index % 2 === 1 ? (
-                <div key={index} style={{ position: 'relative', marginBottom: '1rem', backgroundColor: '#333', padding: '0.5rem', borderRadius: '5px' }}>
-                    <pre style={{ whiteSpace: 'pre-wrap' }}>
-                        <code>{part}</code>
-                    </pre>
-                    <button
-                        onClick={() => {
-                            navigator.clipboard.writeText(part);
-                            toast.success("Copied Successfully");
-                        }}
-                        style={{
-                            position: 'absolute',
-                            top: '0.5rem',
-                            right: '0.5rem',
-                            backgroundColor: 'white',
-                            borderRadius: '50%',
-                            padding: '5px',
-                            cursor: 'pointer'
-                        }}
-                    >
-                        <FaRegCopy size={16} />
-                    </button>
-                </div>
-            ) : (
-                <span key={index}>{part}</span>
-            )
-        );
+    const formatMessage = (text, isHTML = false) => {
+        if (isHTML) {
+            return <div dangerouslySetInnerHTML={{ __html: text }} />;
+        }
+        // Parse Markdown content
+        return <ReactMarkdown>{text}</ReactMarkdown>;
     };
 
     const handleSubmit = async (e) => {
@@ -69,25 +46,22 @@ export default function GeminiAI() {
 
         try {
             const previousMessages = chatHistory.map(msg => msg.text).join("\n");
-            const res = await fetch('/api/generate-content', {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json',
-                },
-                body: JSON.stringify({
-                    prompt: "Previous Responses By You: " + previousMessages + "\nMy New Query: " + userInput
-                }),
-            });
+            const bodyData = {
+                prompt: "Provide the response in well-structured Markdown format:\n" +
+                    "Previous Responses By You: " + previousMessages + "\nMy New Query: " + userInput,
+                output_format: "markdown"
+            };
+            const res = await apiConnector("POST", geminiai.GEMINI_AI_API, bodyData);
 
-            if (!res.ok) {
+            if (res.status !== 200) {
                 throw new Error(`Server error: ${res.statusText}`);
             }
 
-            const data = await res.json();
-            const botMessage = { sender: "Gemini AI", text: data.generatedText };
+            const botMessage = { sender: "Gemini AI", text: res.data.generatedText };
             setChatHistory((prev) => [...prev, botMessage]);
         } catch (error) {
             console.error('Error:', error);
+            toast.error("Something went wrong! Please try again.");
         }
     };
 
@@ -99,8 +73,28 @@ export default function GeminiAI() {
     };
 
     return (
-        <div style={{ marginTop: '2rem', marginBottom: '2rem',margin:'2rem', backgroundColor: '#0c1a25', padding: '2rem', borderRadius: '8px' }}>
-            <h1 style={{ color: '#fff', textAlign: 'center', fontWeight: 'bold', fontSize: '2rem', marginBottom: '1rem' }}>
+        <div
+            style={{
+                marginTop: '2rem',
+                marginBottom: '2rem',
+                margin: '2rem',
+                backgroundColor: '#0c1a25',
+                padding: '2rem',
+                borderRadius: '8px',
+                maxWidth: '100%',
+                width: '1000px',
+                margin: 'auto'
+            }}
+        >
+            <h1
+                style={{
+                    color: '#fff',
+                    textAlign: 'center',
+                    fontWeight: 'bold',
+                    fontSize: '2rem',
+                    marginBottom: '1rem',
+                }}
+            >
                 Gemini AI Chat
             </h1>
             <div
@@ -112,7 +106,7 @@ export default function GeminiAI() {
                     backgroundColor: '#1a2b3c',
                     borderRadius: '8px',
                     marginBottom: '1rem',
-                    color: '#fff'
+                    color: '#fff',
                 }}
             >
                 {chatHistory.map((msg, index) => (
@@ -143,49 +137,66 @@ export default function GeminiAI() {
                     </div>
                 ))}
             </div>
-            <div style={{ marginTop: '1rem' }}>
+            <div style={{ display: 'flex', flexWrap: 'wrap', alignItems: 'center' }}>
                 <input
                     type="text"
                     value={userInput}
                     onChange={(e) => setUserInput(e.target.value)}
                     placeholder="Type a message..."
                     style={{
-                        width: '80%',
+                        width: '100%',
                         padding: '0.5rem',
                         borderRadius: '4px',
                         backgroundColor: '#333',
                         color: '#fff',
                         border: 'none',
-                        marginRight: '1rem'
+                        // marginRight: '1rem',
+                        marginBottom: '1rem',
                     }}
                 />
-                <button
-                    onClick={handleSubmit}
+                <div
                     style={{
-                        padding: '0.5rem 1rem',
-                        backgroundColor: '#1976d2',
-                        color: '#fff',
-                        borderRadius: '5px',
-                        border: 'none',
-                        cursor: 'pointer',
+                        display: 'flex',
+                        flexWrap: 'wrap',
+                        gap: '1rem',
+                        width: '100%',
+                        justifyContent: 'space-between',
                     }}
                 >
-                    <FaRegPaperPlane size={16} />
-                </button>
-                <button
-                    onClick={handleClearChat}
-                    style={{
-                        padding: '0.5rem 1rem',
-                        backgroundColor: '#555',
-                        color: '#fff',
-                        borderRadius: '5px',
-                        border: 'none',
-                        cursor: 'pointer',
-                        marginLeft: '1rem'
-                    }}
-                >
-                    Clear
-                </button>
+                    <button
+                        onClick={handleSubmit}
+                        style={{
+                            flex: '1 1 48%',
+                            padding: '0.75rem 1.5rem',
+                            backgroundColor: '#1976d2',
+                            color: '#fff',
+                            borderRadius: '5px',
+                            border: 'none',
+                            cursor: 'pointer',
+                            display: 'flex',
+                            alignItems: 'center',
+                            justifyContent: 'center',
+                            gap: '0.5rem',
+                        }}
+                    >
+                        <FaRegPaperPlane size={16} />
+                        <span>Send</span>
+                    </button>
+                    <button
+                        onClick={handleClearChat}
+                        style={{
+                            flex: '1 1 48%',
+                            padding: '0.75rem 1.5rem',
+                            backgroundColor: '#555',
+                            color: '#fff',
+                            borderRadius: '5px',
+                            border: 'none',
+                            cursor: 'pointer',
+                        }}
+                    >
+                        Clear Chat
+                    </button>
+                </div>
             </div>
         </div>
     );
