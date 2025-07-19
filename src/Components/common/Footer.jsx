@@ -171,7 +171,7 @@ const Footer = () => {
             })}
           </div>
 
-          <div className="text-center">Made by Shariq © 2024 Techies HUB</div>
+          <div className="text-center">Made by Naman © 2024 Techies HUB</div>
         </div>
       </div>
     </div>
