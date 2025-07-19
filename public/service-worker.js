@@ -52,6 +52,8 @@ self.addEventListener("activate", (event) => {
 });
 
 self.addEventListener("fetch", (event) => {
+    if (event.request.method !== "GET") return;
+
     const requestUrl = new URL(event.request.url);
 
     if (requestUrl.origin === "https://api.dicebear.com" && requestUrl.pathname === "/5.x/initials/svg") {
