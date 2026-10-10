@@ -46,7 +46,7 @@ sequenceDiagram
 
 - Frontend: [`src/pages/GeminiAI.jsx`](src/pages/GeminiAI.jsx) — chat UI with message history
 - Backend: [`server/routes/Gemini-ai.js`](server/routes/Gemini-ai.js) — uses `@google/generative-ai`
-- Requires `GEMINI_API_KEY` in `server/.env`
+- Requires `GEMINI_API_KEY` in `server/.env`; set `GEMINI_MODEL` to pin a specific model (default: `gemini-flash-latest`)
 
 ## 🏛️ System Architecture
 
@@ -172,7 +172,12 @@ The Techies HUB platform's API is designed following the REST architectural styl
 
 ### Configuration
 
-Set up the `.env` files with your actual values.
+Copy the samples and fill in your actual values:
+
+```bash
+cp .env.sample .env
+cp server/.env.sample server/.env
+```
 
 <details>
 <summary><b>🔑 Environment variables</b></summary>
@@ -191,6 +196,7 @@ Set up the `.env` files with your actual values.
 | `FOLDER_NAME` / `FOLDER_VIDEO` | Cloudinary upload folders |
 | `RAZORPAY_KEY` / `RAZORPAY_SECRET` | Razorpay payments |
 | `GEMINI_API_KEY` | Google Gemini (Smart Assistant) |
+| `GEMINI_MODEL` *(optional)* | Gemini model to use — defaults to `gemini-flash-latest` |
 
 **Root `.env` (React)**
 
